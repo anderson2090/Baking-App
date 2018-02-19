@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            android:id="@+id/recipe_name_text_view"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"
             android:textSize="20sp"

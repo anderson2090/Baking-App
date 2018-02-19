@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -57,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
     public class RecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
 
-        public String[] recipes = {"Recipe One", "Recipe Two", "Recipe 3"};
+        public ArrayList<String> recipes = new ArrayList<>();
+
+        public RecyclerAdapter() {
+            for (int i = 0; i <= 100; i++) {
+                recipes.add("Recipe " + i);
+            }
+        }
 
         @Override
         public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -69,20 +77,21 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(RecipeViewHolder holder, int position) {
-            holder.recipeNameTextView.setText(recipes[position]);
+            holder.recipeNameTextView.setText(recipes.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return recipes.length;
+            return recipes.size();
         }
 
     }
+
     public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         public TextView recipeNameTextView;
 
-       public RecipeViewHolder(View itemView) {
+        public RecipeViewHolder(View itemView) {
             super(itemView);
             recipeNameTextView = itemView.findViewById(R.id.recipe_name_text_view);
         }

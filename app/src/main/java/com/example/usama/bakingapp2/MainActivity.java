@@ -43,13 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         app = (BakingApp) getApplication();
 
-        recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter);
-
-
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new AsyncHttpResponseHandler() {
@@ -70,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
                 List<Recipe> recipes = gson.fromJson(response, founderListType);
                 app.setRecipes(recipes);
 
+                recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
+                layoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+                adapter = new RecyclerAdapter();
+                recyclerView.setAdapter(adapter);
 
 
             }
@@ -106,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
     public class RecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
 
-        public ArrayList<String> recipes = new ArrayList<>();
+        public List<Recipe> recipes = app.getRecipes();
 
         public RecyclerAdapter() {
-            for (int i = 0; i <= 100; i++) {
+            /*for (int i = 0; i <= 100; i++) {
                 recipes.add("Recipe " + i);
-            }
+            }*/
         }
 
         @Override
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(RecipeViewHolder holder, int position) {
-            holder.recipeNameTextView.setText(recipes.get(position));
+            holder.recipeNameTextView.setText(recipes.get(position).getName());
         }
 
         @Override

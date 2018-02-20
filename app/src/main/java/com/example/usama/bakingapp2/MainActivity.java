@@ -1,5 +1,8 @@
 package com.example.usama.bakingapp2;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.usama.bakingapp2.model.Recipe;
@@ -18,6 +23,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -121,8 +128,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(RecipeViewHolder holder, int position) {
+        public void onBindViewHolder(final RecipeViewHolder holder, int position) {
             holder.recipeNameTextView.setText(recipes.get(position).getName());
+
+            /*
+            Uncomment the following line of code
+            to make sure that this
+            code will work if there's an image
+            in the JSON response.
+             */
+
+            //recipes.get(position).setImage("http://i.imgur.com/DvpvklR.png");
+
+            if (!recipes.get(position).getImage().equals("")) {
+                Picasso.with(getApplicationContext())
+                        .load(recipes.get(position).getImage())
+                        .placeholder(R.drawable.no_image_available)
+                        .error(R.drawable.no_image_available)
+                        .into(holder.backGroundImageView);
+            }else {
+                Picasso.with(getApplicationContext())
+                        .load(R.drawable.no_image_available)
+                        .into(holder.backGroundImageView);
+            }
+
         }
 
         @Override
@@ -134,10 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
     public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
+        public RelativeLayout recipe_card_layout;
         public TextView recipeNameTextView;
+        public ImageView backGroundImageView;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
+            backGroundImageView = itemView.findViewById(R.id.recipe_background_image_view);
+            recipe_card_layout = itemView.findViewById(R.id.recipe_card_layout);
             recipeNameTextView = itemView.findViewById(R.id.recipe_name_text_view);
         }
     }

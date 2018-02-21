@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,11 +20,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.usama.bakingapp2.model.Recipe;
 import com.example.usama.bakingapp2.utils.APIClient;
 import com.example.usama.bakingapp2.utils.APIEndPoints;
-import com.example.usama.bakingapp2.utils.ScreenSizeHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -156,10 +157,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class RecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
+    public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecipeViewHolder> {
 
 
-        public List<Recipe> recipes = app.getRecipes();
+        List<Recipe> recipes = app.getRecipes();
 
 
         @Override
@@ -206,20 +207,30 @@ public class MainActivity extends AppCompatActivity {
             return recipes.size();
         }
 
-    }
+        class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-    public class RecipeViewHolder extends RecyclerView.ViewHolder {
+            RelativeLayout recipeCardLayout;
+            TextView recipeNameTextView;
+            ImageView backGroundImageView;
+            CardView recipeCard;
 
-        public RelativeLayout recipe_card_layout;
-        public TextView recipeNameTextView;
-        public ImageView backGroundImageView;
-
-        public RecipeViewHolder(View itemView) {
-            super(itemView);
-            backGroundImageView = itemView.findViewById(R.id.recipe_background_image_view);
-            recipe_card_layout = itemView.findViewById(R.id.recipe_card_layout);
-            recipeNameTextView = itemView.findViewById(R.id.recipe_name_text_view);
+            RecipeViewHolder(View itemView) {
+                super(itemView);
+                backGroundImageView = itemView.findViewById(R.id.recipe_background_image_view);
+                recipeCardLayout = itemView.findViewById(R.id.recipe_card_layout);
+                recipeNameTextView = itemView.findViewById(R.id.recipe_name_text_view);
+                recipeCard = itemView.findViewById(R.id.recipe_card);
+                recipeCard.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getApplicationContext(),
+                                recipes.get(getAdapterPosition()).getName(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
         }
+
     }
 
 

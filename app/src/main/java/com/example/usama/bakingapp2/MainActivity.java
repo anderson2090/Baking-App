@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,11 +27,13 @@ import android.widget.Toast;
 import com.example.usama.bakingapp2.model.Recipe;
 import com.example.usama.bakingapp2.utils.APIClient;
 import com.example.usama.bakingapp2.utils.APIEndPoints;
+import com.example.usama.bakingapp2.utils.NetworkHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
 
+import static com.example.usama.bakingapp2.utils.NetworkHelper.hasNetworkConnection;
 import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.LARGE;
 import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.screenSize;
 
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     BakingApp app;
     RecyclerView recyclerView;
+    RelativeLayout mainActivityRootLayout;
     RecyclerView.LayoutManager layoutManager;
     RecyclerView.Adapter adapter;
     Parcelable listState;
@@ -51,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         app = (BakingApp) getApplication();
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mainActivityRootLayout = (RelativeLayout) findViewById(R.id.main_activity_root_layout);
 
         // Using Retrofit 2 Synchronously inside AsyncTask Loader
         getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<List<Recipe>>() {
@@ -62,21 +69,41 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> recipes) {
 
-                app.setRecipes(recipes);
-                recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
-                if (screenSize(getApplicationContext()) == LARGE) {
-                    layoutManager = new GridLayoutManager(getApplicationContext(), 3);
+                if (!hasNetworkConnection(getApplicationContext())) {
+                    Snackbar.make(mainActivityRootLayout,
+                            "Please Check Your Internet connection",
+                            Snackbar.LENGTH_INDEFINITE).setAction(R.string.retry, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(), R.string.retrying, Toast.LENGTH_SHORT).show();
+                            //Reload Current Activity
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(getIntent());
+                            overridePendingTransition(0, 0);
+                        }
+                    }).show();
+                    progressBar.setVisibility(View.GONE);
                 } else {
-                    layoutManager = new LinearLayoutManager(getApplicationContext());
-                }
 
-                recyclerView.setLayoutManager(layoutManager);
-                adapter = new RecyclerAdapter();
-                recyclerView.setAdapter(adapter);
-                if (listState != null) {
-                    layoutManager.onRestoreInstanceState(listState);
-                }
+                    app.setRecipes(recipes);
+                    recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
+                    if (screenSize(getApplicationContext()) == LARGE) {
+                        layoutManager = new GridLayoutManager(getApplicationContext(), 3);
+                    } else {
+                        layoutManager = new LinearLayoutManager(getApplicationContext());
+                    }
 
+                    recyclerView.setLayoutManager(layoutManager);
+                    adapter = new RecyclerAdapter();
+                    recyclerView.setAdapter(adapter);
+                    progressBar.setVisibility(View.GONE);
+                    if (listState != null) {
+                        layoutManager.onRestoreInstanceState(listState);
+                    }
+
+                }
             }
 
             @Override
@@ -91,8 +118,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        listState = layoutManager.onSaveInstanceState();
-        outState.putParcelable(STATE, listState);
+        if (layoutManager != null) {
+            listState = layoutManager.onSaveInstanceState();
+            outState.putParcelable(STATE, listState);
+        }
     }
 
     @Override

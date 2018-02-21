@@ -1,17 +1,15 @@
 package com.example.usama.bakingapp2;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.content.Loader;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telecom.Call;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,26 +18,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.usama.bakingapp2.model.Recipe;
 import com.example.usama.bakingapp2.utils.APIClient;
 import com.example.usama.bakingapp2.utils.APIEndPoints;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,15 +45,17 @@ public class MainActivity extends AppCompatActivity {
 
         app = (BakingApp) getApplication();
 
-
-        final APIEndPoints apiService = APIClient.getClient().create(APIEndPoints.class);
-        retrofit2.Call<List<Recipe>> call = apiService.getRecipe();
-        call.enqueue(new Callback<List<Recipe>>() {
+        // Using Retrofit 2 Synchronously inside AsyncTask Loader
+        getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<List<Recipe>>() {
             @Override
-            public void onResponse(@NonNull retrofit2.Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
+            public Loader<List<Recipe>> onCreateLoader(int i, Bundle bundle) {
+                return new RecipeLoadingTask(getApplicationContext());
+            }
 
+            @Override
+            public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> recipes) {
 
-                app.setRecipes(response.body());
+                app.setRecipes(recipes);
                 recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
                 layoutManager = new LinearLayoutManager(getApplicationContext());
                 recyclerView.setLayoutManager(layoutManager);
@@ -77,47 +65,16 @@ public class MainActivity extends AppCompatActivity {
                     layoutManager.onRestoreInstanceState(listState);
                 }
 
-
             }
 
             @Override
-            public void onFailure(retrofit2.Call<List<Recipe>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_SHORT).show();
+            public void onLoaderReset(Loader<List<Recipe>> loader) {
+
             }
-        });
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        client.get(url, new AsyncHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-//                String response = null;
-//                try {
-//                    response = new String(responseBody, "UTF-8");
-//
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                Gson gson = new Gson();
-//                Type founderListType = new TypeToken<ArrayList<Recipe>>() {
-//                }.getType();
-//
-//                List<Recipe> recipes = gson.fromJson(response, founderListType);
-//                app.setRecipes(recipes);
-//
-//                recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
-//                layoutManager = new LinearLayoutManager(getApplicationContext());
-//                recyclerView.setLayoutManager(layoutManager);
-//                adapter = new RecyclerAdapter();
-//                recyclerView.setAdapter(adapter);
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-//
-//            }
-//        });
+        }).forceLoad();
+
+
+
 
     }
 
@@ -166,17 +123,37 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private static class RecipeLoadingTask extends AsyncTaskLoader<List<Recipe>>{
+        List<Recipe> recipes;
+        public RecipeLoadingTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        public List<Recipe> loadInBackground() {
+
+
+
+            final APIEndPoints apiService = APIClient.getClient().create(APIEndPoints.class);
+            retrofit2.Call<List<Recipe>> call = apiService.getRecipe();
+
+            try {
+                recipes = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return recipes;
+        }
+    }
+
     public class RecyclerAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
 
         public List<Recipe> recipes = app.getRecipes();
 
 
-        public RecyclerAdapter() {
-            /*for (int i = 0; i <= 100; i++) {
-                recipes.add("Recipe " + i);
-            }*/
-        }
+
 
         @Override
         public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -234,24 +211,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void loadData(){
-//        final APIEndPoints apiService = APIClient.getClient().create(APIEndPoints.class);
-//        retrofit2.Call<List<Recipe>> call = apiService.getRecipe();
-//        call.enqueue(new Callback<List<Recipe>>() {
-//            @Override
-//            public void onResponse(retrofit2.Call<List<Recipe>> call, Response<List<Recipe>> response) {
-//
-//                List<Recipe> recipes = response.body();
-//
-//                Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(retrofit2.Call<List<Recipe>> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+
 
 
 }

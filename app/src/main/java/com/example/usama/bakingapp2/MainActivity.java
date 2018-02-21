@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,10 +23,14 @@ import android.widget.TextView;
 import com.example.usama.bakingapp2.model.Recipe;
 import com.example.usama.bakingapp2.utils.APIClient;
 import com.example.usama.bakingapp2.utils.APIEndPoints;
+import com.example.usama.bakingapp2.utils.ScreenSizeHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.LARGE;
+import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.screenSize;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     RecyclerView.Adapter adapter;
     Parcelable listState;
+    final String STATE = "STATE";
 
 
     @Override
@@ -57,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
                 app.setRecipes(recipes);
                 recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
-                layoutManager = new LinearLayoutManager(getApplicationContext());
+                if (screenSize(getApplicationContext()) == LARGE) {
+                    layoutManager = new GridLayoutManager(getApplicationContext(), 3);
+                } else {
+                    layoutManager = new LinearLayoutManager(getApplicationContext());
+                }
+
                 recyclerView.setLayoutManager(layoutManager);
                 adapter = new RecyclerAdapter();
                 recyclerView.setAdapter(adapter);
@@ -74,22 +85,20 @@ public class MainActivity extends AppCompatActivity {
         }).forceLoad();
 
 
-
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         listState = layoutManager.onSaveInstanceState();
-        outState.putParcelable("state", listState);
+        outState.putParcelable(STATE, listState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            listState = savedInstanceState.getParcelable("state");
+            listState = savedInstanceState.getParcelable(STATE);
         }
     }
 
@@ -123,15 +132,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static class RecipeLoadingTask extends AsyncTaskLoader<List<Recipe>>{
+    private static class RecipeLoadingTask extends AsyncTaskLoader<List<Recipe>> {
         List<Recipe> recipes;
+
         public RecipeLoadingTask(Context context) {
             super(context);
         }
 
         @Override
         public List<Recipe> loadInBackground() {
-
 
 
             final APIEndPoints apiService = APIClient.getClient().create(APIEndPoints.class);
@@ -151,8 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         public List<Recipe> recipes = app.getRecipes();
-
-
 
 
         @Override
@@ -176,6 +183,10 @@ public class MainActivity extends AppCompatActivity {
 
             //recipes.get(position).setImage("http://i.imgur.com/DvpvklR.png");
 
+
+            /* Display the image if there is one in the JSON response
+               Otherwise load the placeholder image.
+             */
             if (!recipes.get(position).getImage().equals("")) {
                 Picasso.with(getApplicationContext())
                         .load(recipes.get(position).getImage())
@@ -210,8 +221,6 @@ public class MainActivity extends AppCompatActivity {
             recipeNameTextView = itemView.findViewById(R.id.recipe_name_text_view);
         }
     }
-
-
 
 
 }

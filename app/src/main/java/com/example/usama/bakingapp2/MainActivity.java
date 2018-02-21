@@ -3,6 +3,7 @@ package com.example.usama.bakingapp2;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -37,7 +38,7 @@ import static com.example.usama.bakingapp2.utils.NetworkHelper.hasNetworkConnect
 import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.LARGE;
 import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.screenSize;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RootActivity {
 
     BakingApp app;
     RecyclerView recyclerView;
@@ -252,9 +253,8 @@ public class MainActivity extends AppCompatActivity {
                 recipeCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(),
-                                recipes.get(getAdapterPosition()).getName(), Toast.LENGTH_SHORT)
-                                .show();
+                        startActivity(new Intent(getApplicationContext(),
+                                StepsAndIngredientsActivity.class));
                     }
                 });
             }

@@ -15,4 +15,5 @@
         android:layout_centerVertical="true"
         android:text="Steps and ingredients activity"
         android:textSize="20sp" />
+
 </RelativeLayout>

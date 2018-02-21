@@ -4,4 +4,6 @@
     <string name="retry">RETRY</string>
     <string name="retrying">Retrying...</string>
     <string name="title_activity_steps_and_ingredients">StepsAndIngredientsActivity</string>
+    <string name="steps">Steps</string>
+    <string name="ingredients">Ingredients</string>
 </resources>

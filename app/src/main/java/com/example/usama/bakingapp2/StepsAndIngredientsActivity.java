@@ -1,5 +1,7 @@
 package com.example.usama.bakingapp2;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,8 +13,14 @@ import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.example.usama.bakingapp2.fragments.IngredientsFragment;
+import com.example.usama.bakingapp2.fragments.StepsFragment;
 
 public class StepsAndIngredientsActivity extends RootActivity {
+
+    final String STEPS_FRAGMENT = "STEPS FRAGMENT";
+    final String INGREDIENTS_FRAGMENT = "INGREDIENTS FRAGMENT";
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +28,9 @@ public class StepsAndIngredientsActivity extends RootActivity {
         setContentView(R.layout.activity_steps_and_ingredients);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        fragmentManager = getFragmentManager();
+        addFragment(new StepsFragment(), STEPS_FRAGMENT);
+
 
         AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 
@@ -33,9 +44,12 @@ public class StepsAndIngredientsActivity extends RootActivity {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
                 if (position == 0) {
-                    Toast.makeText(getApplicationContext(), "Steps", Toast.LENGTH_SHORT).show();
+                    addFragment(new StepsFragment(), STEPS_FRAGMENT);
+
+
                 } else if (position == 1) {
-                    Toast.makeText(getApplicationContext(), "Ingredients", Toast.LENGTH_SHORT).show();
+                    addFragment(new IngredientsFragment(), INGREDIENTS_FRAGMENT);
+
                 }
                 return true;
             }
@@ -50,6 +64,15 @@ public class StepsAndIngredientsActivity extends RootActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void addFragment(Fragment fragment, String tag) {
+
+        if (fragmentManager.findFragmentByTag(tag) == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.steps_and_ingredient_root_layout, fragment)
+                    .commit();
+        }
     }
 
 

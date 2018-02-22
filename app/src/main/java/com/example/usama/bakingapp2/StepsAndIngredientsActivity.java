@@ -5,11 +5,8 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -20,7 +17,11 @@ public class StepsAndIngredientsActivity extends RootActivity {
 
     final String STEPS_FRAGMENT = "STEPS FRAGMENT";
     final String INGREDIENTS_FRAGMENT = "INGREDIENTS FRAGMENT";
+    final String CURRENT_FRAGMENT = "CURRENT FRAGMENT";
+    static int fragmentIndex = 0;
+    Fragment[] fragments = {new StepsFragment(), new IngredientsFragment()};
     FragmentManager fragmentManager;
+    AHBottomNavigation bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,28 +30,31 @@ public class StepsAndIngredientsActivity extends RootActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fragmentManager = getFragmentManager();
-        addFragment(new StepsFragment(), STEPS_FRAGMENT);
+        addFragment(fragments[fragmentIndex], STEPS_FRAGMENT);
 
 
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
 
         AHBottomNavigationItem steps = new AHBottomNavigationItem(R.string.steps, R.drawable.ic_stairs, R.color.colorAccent);
         AHBottomNavigationItem ingredients = new AHBottomNavigationItem(R.string.ingredients, R.drawable.ic_harvest, R.color.colorAccent);
 
         bottomNavigation.addItem(steps);
         bottomNavigation.addItem(ingredients);
+        bottomNavigation.setCurrentItem(fragmentIndex);
 
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
+
                 if (position == 0) {
-                    addFragment(new StepsFragment(), STEPS_FRAGMENT);
+                    addFragment(fragments[position], STEPS_FRAGMENT);
 
 
                 } else if (position == 1) {
-                    addFragment(new IngredientsFragment(), INGREDIENTS_FRAGMENT);
+                    addFragment(fragments[position], INGREDIENTS_FRAGMENT);
 
                 }
+                fragmentIndex = position;
                 return true;
             }
         });
@@ -65,6 +69,21 @@ public class StepsAndIngredientsActivity extends RootActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_FRAGMENT, fragmentIndex);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            fragmentIndex = savedInstanceState.getInt(CURRENT_FRAGMENT);
+        }
+    }
+
 
     public void addFragment(Fragment fragment, String tag) {
 

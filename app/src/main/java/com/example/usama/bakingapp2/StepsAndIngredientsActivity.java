@@ -13,13 +13,17 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.usama.bakingapp2.fragments.IngredientsFragment;
 import com.example.usama.bakingapp2.fragments.StepsFragment;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 public class StepsAndIngredientsActivity extends RootActivity {
 
-    final String STEPS_FRAGMENT = "STEPS FRAGMENT";
-    final String INGREDIENTS_FRAGMENT = "INGREDIENTS FRAGMENT";
+    //    final String STEPS_FRAGMENT = "STEPS FRAGMENT";
+//    final String INGREDIENTS_FRAGMENT = "INGREDIENTS FRAGMENT";
     final String CURRENT_FRAGMENT = "CURRENT FRAGMENT";
     static int fragmentIndex = 0;
-    Fragment[] fragments = {new StepsFragment(), new IngredientsFragment()};
+    //   Fragment[] fragments = {new StepsFragment(), new IngredientsFragment()};
+    LinkedHashMap<String, Fragment> fragmentLinkedHashMap = new LinkedHashMap<>();
     FragmentManager fragmentManager;
     AHBottomNavigation bottomNavigation;
 
@@ -28,10 +32,15 @@ public class StepsAndIngredientsActivity extends RootActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_and_ingredients);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        fragmentLinkedHashMap.put("Steps Fragment", new StepsFragment());
+        fragmentLinkedHashMap.put("Ingredients Fragment", new IngredientsFragment());
         setSupportActionBar(toolbar);
         fragmentManager = getFragmentManager();
-        addFragment(fragments[fragmentIndex], STEPS_FRAGMENT);
+        //     addFragment(fragments[fragmentIndex], STEPS_FRAGMENT);
 
+        addFragment(new ArrayList<>(fragmentLinkedHashMap.values()).get(fragmentIndex),
+                new ArrayList<>(fragmentLinkedHashMap.keySet()).get(fragmentIndex));
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
@@ -46,14 +55,10 @@ public class StepsAndIngredientsActivity extends RootActivity {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
 
-                if (position == 0) {
-                    addFragment(fragments[position], STEPS_FRAGMENT);
+                //  addFragment(fragments[position], STEPS_FRAGMENT);
+                addFragment(new ArrayList<>(fragmentLinkedHashMap.values()).get(position),
+                        new ArrayList<>(fragmentLinkedHashMap.keySet()).get(position));
 
-
-                } else if (position == 1) {
-                    addFragment(fragments[position], INGREDIENTS_FRAGMENT);
-
-                }
                 fragmentIndex = position;
                 return true;
             }

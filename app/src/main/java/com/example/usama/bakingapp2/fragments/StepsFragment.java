@@ -1,9 +1,10 @@
 package com.example.usama.bakingapp2.fragments;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ public class StepsFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerAdapter recyclerAdapter;
     RecyclerView.LayoutManager layoutManager;
+    Parcelable listState;
+    final String LIST_STATE = "LIST STATE";
 
     @Nullable
     @Override
@@ -36,6 +39,29 @@ public class StepsFragment extends Fragment {
 
         return view;
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            listState = savedInstanceState.getParcelable(LIST_STATE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        listState = layoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE, listState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (listState != null) {
+            layoutManager.onRestoreInstanceState(listState);
+        }
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {

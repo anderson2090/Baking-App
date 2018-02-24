@@ -1,10 +1,11 @@
 package com.example.usama.bakingapp2;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -41,12 +42,12 @@ public class StepsAndIngredientsActivity extends RootActivity {
         fragmentLinkedHashMap.put(STEPS_FRAGMENT_TAG, stepsFragment);
         fragmentLinkedHashMap.put(INGREDIENTS_FRAGMENT_TAG, ingredientsFragment);
         setSupportActionBar(toolbar);
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         //     addFragment(fragments[fragmentIndex], STEPS_FRAGMENT);
 
         if (savedInstanceState != null) {
             fragmentIndex = savedInstanceState.getInt(CURRENT_FRAGMENT);
-            currentFragment = getFragmentManager().getFragment(savedInstanceState,
+            currentFragment = fragmentManager.getFragment(savedInstanceState,
                     new ArrayList<>(fragmentLinkedHashMap.keySet()).get(fragmentIndex));
 
         } else {

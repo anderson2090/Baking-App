@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.usama.bakingapp2.BakingApp;
 import com.example.usama.bakingapp2.R;
+import com.example.usama.bakingapp2.model.RecipeIngredient;
 
 import java.util.ArrayList;
 
@@ -23,13 +25,20 @@ public class IngredientsFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     Parcelable listState;
     final String LIST_STATE = "LIST_STATE";
+    int currentRecipeIndex;
+    BakingApp bakingApp;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.ingredients_fragment, container, false);
+
+        Bundle arguments = getArguments();
+        currentRecipeIndex = arguments.getInt("currentRecipe");
+        bakingApp = (BakingApp) getActivity().getApplication();
+
         recyclerView = view.findViewById(R.id.ingredients_recycler_view);
-        adapter = new RecyclerAdapter();
+        adapter = new RecyclerAdapter(currentRecipeIndex);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -60,12 +69,15 @@ public class IngredientsFragment extends Fragment {
     }
 
     class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-        ArrayList<String> ingredients = new ArrayList<>();
+        ArrayList<RecipeIngredient> ingredients = new ArrayList<>();
 
-        public RecyclerAdapter() {
-            for (int i = 0; i <= 100; i++) {
-                ingredients.add("Ingredients " + i);
-            }
+        int currentRecipeIndex;
+
+
+        public RecyclerAdapter(int currentRecipeIndex) {
+
+           this.currentRecipeIndex = currentRecipeIndex;
+           ingredients = bakingApp.getRecipes().get(currentRecipeIndex).getIngredients();
         }
 
         @Override
@@ -78,7 +90,7 @@ public class IngredientsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
-            holder.ingredientsCardTextView.setText(ingredients.get(position));
+            holder.ingredientsCardTextView.setText(ingredients.get(position).getIngredient());
         }
 
         @Override

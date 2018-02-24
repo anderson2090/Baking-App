@@ -8,7 +8,6 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +27,6 @@ import android.widget.Toast;
 import com.example.usama.bakingapp2.model.Recipe;
 import com.example.usama.bakingapp2.utils.APIClient;
 import com.example.usama.bakingapp2.utils.APIEndPoints;
-import com.example.usama.bakingapp2.utils.NetworkHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -253,8 +251,9 @@ public class MainActivity extends RootActivity {
                 recipeCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivity(new Intent(getApplicationContext(),
-                                StepsAndIngredientsActivity.class));
+                        Intent intent = new Intent(getApplicationContext(),StepsAndIngredientsActivity.class);
+                        intent.putExtra("currentRecipe",getAdapterPosition());
+                        startActivity(intent);
                     }
                 });
             }

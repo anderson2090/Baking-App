@@ -7,12 +7,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.usama.bakingapp2.BakingApp;
 import com.example.usama.bakingapp2.R;
+import com.example.usama.bakingapp2.model.Step;
 
 import java.util.ArrayList;
 
@@ -23,18 +26,27 @@ public class StepsFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     Parcelable listState;
     final String LIST_STATE = "LIST STATE";
+    int currentRecipeIndex;
+    BakingApp bakingApp;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.steps_fragment, container, false);
+
+        Bundle arguments = getArguments();
+        currentRecipeIndex = arguments.getInt("currentRecipe");
+        bakingApp = (BakingApp) getActivity().getApplication();
+
         recyclerView = view.findViewById(R.id.steps_recycler_view);
 
         layoutManager = new LinearLayoutManager(getActivity());
-        recyclerAdapter = new RecyclerAdapter();
+        recyclerAdapter = new RecyclerAdapter(currentRecipeIndex);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
+
+
 
 
         return view;
@@ -66,12 +78,14 @@ public class StepsFragment extends Fragment {
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-        ArrayList<String> steps = new ArrayList<>();
 
-        public RecyclerAdapter() {
-            for (int i = 0; i <= 100; i++) {
-                steps.add("Step " + i);
-            }
+        int currentRecipeIndex;
+        ArrayList<Step> steps = new ArrayList<>();
+
+        public RecyclerAdapter(int currentRecipeIndex) {
+
+            this.currentRecipeIndex = currentRecipeIndex;
+            this.steps = bakingApp.getRecipes().get(currentRecipeIndex).getSteps();
         }
 
         @Override
@@ -84,7 +98,7 @@ public class StepsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
-            holder.stepCardTextView.setText(steps.get(position));
+            holder.stepCardTextView.setText(steps.get(position).getShortDescription());
         }
 
         @Override

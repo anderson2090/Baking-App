@@ -39,6 +39,7 @@ public class StepsAndIngredientsActivity extends RootActivity {
         setContentView(R.layout.activity_steps_and_ingredients);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+
         fragmentLinkedHashMap.put(STEPS_FRAGMENT_TAG, stepsFragment);
         fragmentLinkedHashMap.put(INGREDIENTS_FRAGMENT_TAG, ingredientsFragment);
         setSupportActionBar(toolbar);
@@ -111,7 +112,9 @@ public class StepsAndIngredientsActivity extends RootActivity {
 
 
     public void addFragment(Fragment fragment, String tag) {
-
+        if ((getIntent().getExtras()) != null) {
+            fragment.setArguments(getIntent().getExtras());
+        }
         if (fragmentManager.findFragmentByTag(tag) == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.steps_and_ingredient_root_layout, fragment)

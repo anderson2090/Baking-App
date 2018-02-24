@@ -33,7 +33,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.usama.bakingapp2.MainActivity" />
         </activity>
-        <activity android:name=".RootActivity"></activity>
+        <activity android:name=".RootActivity" />
+        <activity
+            android:name=".StepDetailsActivity"
+            android:label="@string/title_activity_step_details"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

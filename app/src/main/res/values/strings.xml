@@ -6,4 +6,5 @@
     <string name="title_activity_steps_and_ingredients">StepsAndIngredientsActivity</string>
     <string name="steps">Steps</string>
     <string name="ingredients">Ingredients</string>
+    <string name="title_activity_step_details">StepDetailsActivity</string>
 </resources>

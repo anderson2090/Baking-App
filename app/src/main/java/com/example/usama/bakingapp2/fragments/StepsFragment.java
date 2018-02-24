@@ -1,10 +1,12 @@
 package com.example.usama.bakingapp2.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.usama.bakingapp2.BakingApp;
 import com.example.usama.bakingapp2.R;
+import com.example.usama.bakingapp2.StepDetailsActivity;
 import com.example.usama.bakingapp2.model.Step;
 
 import java.util.ArrayList;
@@ -45,8 +48,6 @@ public class StepsFragment extends Fragment {
         recyclerAdapter = new RecyclerAdapter(currentRecipeIndex);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
-
-
 
 
         return view;
@@ -98,7 +99,7 @@ public class StepsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
-            holder.stepCardTextView.setText(steps.get(position).getShortDescription());
+            holder.stepCardTextView.setText(position + 1 + ". " + steps.get(position).getShortDescription());
         }
 
         @Override
@@ -108,11 +109,19 @@ public class StepsFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
+            CardView stepCard;
             TextView stepCardTextView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 stepCardTextView = itemView.findViewById(R.id.step_card_text_view);
+                stepCard = itemView.findViewById(R.id.step_card);
+                stepCard.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(getActivity(), StepDetailsActivity.class));
+                    }
+                });
             }
         }
     }

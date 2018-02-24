@@ -119,7 +119,10 @@ public class StepsFragment extends Fragment {
                 stepCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivity(new Intent(getActivity(), StepDetailsActivity.class));
+
+                        Intent intent = new Intent(new Intent(getActivity(), StepDetailsActivity.class));
+                        intent.putExtra("currentStep",steps.get(getAdapterPosition()));
+                        startActivity(intent);
                     }
                 });
             }

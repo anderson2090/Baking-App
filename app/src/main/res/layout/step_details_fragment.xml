@@ -31,4 +31,11 @@
         android:layout_centerHorizontal="true"
         android:textSize="20sp"
         tools:text="Description Text" />
+    <TextView
+        android:text="Current Step"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/current_step_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

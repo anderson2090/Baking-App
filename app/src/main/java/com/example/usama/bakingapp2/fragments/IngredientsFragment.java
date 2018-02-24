@@ -76,8 +76,8 @@ public class IngredientsFragment extends Fragment {
 
         public RecyclerAdapter(int currentRecipeIndex) {
 
-           this.currentRecipeIndex = currentRecipeIndex;
-           ingredients = bakingApp.getRecipes().get(currentRecipeIndex).getIngredients();
+            this.currentRecipeIndex = currentRecipeIndex;
+            ingredients = bakingApp.getRecipes().get(currentRecipeIndex).getIngredients();
         }
 
         @Override
@@ -91,6 +91,8 @@ public class IngredientsFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
             holder.ingredientsCardTextView.setText(ingredients.get(position).getIngredient());
+            holder.measureTextView.setText(ingredients.get(position).getMeasure());
+            holder.quantityTextView.setText(ingredients.get(position).getQuantity());
         }
 
         @Override
@@ -101,10 +103,14 @@ public class IngredientsFragment extends Fragment {
         class ViewHolder extends RecyclerView.ViewHolder {
 
             TextView ingredientsCardTextView;
+            TextView quantityTextView;
+            TextView measureTextView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                ingredientsCardTextView = itemView.findViewById(R.id.ingredient_card_text_view);
+                ingredientsCardTextView = itemView.findViewById(R.id.ingredient_card_name_text_view);
+                quantityTextView = itemView.findViewById(R.id.ingredient_card_quantity_text_view);
+                measureTextView = itemView.findViewById(R.id.ingredient_card_measure_text_view);
             }
         }
     }

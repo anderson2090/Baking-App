@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ingredient_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,13 +16,33 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/ingredient_card_text_view"
+            android:id="@+id/ingredient_card_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="Ingredient"
-            android:textSize="20sp" />
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            tools:text="Ingredient" />
+
+        <TextView
+            android:id="@+id/ingredient_card_quantity_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredient_card_name_text_view"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp"
+            tools:text="Quantity" />
+
+        <TextView
+            android:id="@+id/ingredient_card_measure_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredient_card_name_text_view"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/ingredient_card_quantity_text_view"
+            android:textSize="20sp"
+            tools:text="Measure" />
     </RelativeLayout>
 
 

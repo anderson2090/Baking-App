@@ -19,4 +19,5 @@ public class IngredientsFragment extends Fragment {
         View view = inflater.inflate(R.layout.ingredients_fragment, container, false);
         return view;
     }
+
 }

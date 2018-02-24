@@ -21,11 +21,16 @@ public class StepsAndIngredientsActivity extends RootActivity {
     //    final String STEPS_FRAGMENT = "STEPS FRAGMENT";
 //    final String INGREDIENTS_FRAGMENT = "INGREDIENTS FRAGMENT";
     final String CURRENT_FRAGMENT = "CURRENT FRAGMENT";
+    final String STEPS_FRAGMENT_TAG = "STEPS FRAGMENT";
+    final String INGREDIENTS_FRAGMENT_TAG = "INGREDIENTS FRAGMENT";
     static int fragmentIndex = 0;
+    StepsFragment stepsFragment = new StepsFragment();
+    IngredientsFragment ingredientsFragment = new IngredientsFragment();
     //   Fragment[] fragments = {new StepsFragment(), new IngredientsFragment()};
     LinkedHashMap<String, Fragment> fragmentLinkedHashMap = new LinkedHashMap<>();
     FragmentManager fragmentManager;
     AHBottomNavigation bottomNavigation;
+    Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +38,22 @@ public class StepsAndIngredientsActivity extends RootActivity {
         setContentView(R.layout.activity_steps_and_ingredients);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        fragmentLinkedHashMap.put("Steps Fragment", new StepsFragment());
-        fragmentLinkedHashMap.put("Ingredients Fragment", new IngredientsFragment());
+        fragmentLinkedHashMap.put(STEPS_FRAGMENT_TAG, stepsFragment);
+        fragmentLinkedHashMap.put(INGREDIENTS_FRAGMENT_TAG, ingredientsFragment);
         setSupportActionBar(toolbar);
         fragmentManager = getFragmentManager();
         //     addFragment(fragments[fragmentIndex], STEPS_FRAGMENT);
 
-        addFragment(new ArrayList<>(fragmentLinkedHashMap.values()).get(fragmentIndex),
-                new ArrayList<>(fragmentLinkedHashMap.keySet()).get(fragmentIndex));
+        if (savedInstanceState != null) {
+            fragmentIndex = savedInstanceState.getInt(CURRENT_FRAGMENT);
+            currentFragment = getFragmentManager().getFragment(savedInstanceState,
+                    new ArrayList<>(fragmentLinkedHashMap.keySet()).get(fragmentIndex));
+
+        } else {
+            currentFragment = new ArrayList<>(fragmentLinkedHashMap.values()).get(fragmentIndex);
+            addFragment(currentFragment,
+                    new ArrayList<>(fragmentLinkedHashMap.keySet()).get(fragmentIndex));
+        }
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
@@ -79,6 +92,12 @@ public class StepsAndIngredientsActivity extends RootActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CURRENT_FRAGMENT, fragmentIndex);
+        currentFragment = new ArrayList<>(fragmentLinkedHashMap.values()).get(fragmentIndex);
+        if (new ArrayList<>(fragmentLinkedHashMap.values()).get(fragmentIndex).isAdded()) {
+            fragmentManager.putFragment(outState,
+                    new ArrayList<>(fragmentLinkedHashMap.keySet()).get(fragmentIndex),
+                    currentFragment);
+        }
     }
 
     @Override

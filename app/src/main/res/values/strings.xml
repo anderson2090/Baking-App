@@ -7,4 +7,6 @@
     <string name="steps">Steps</string>
     <string name="ingredients">Ingredients</string>
     <string name="title_activity_step_details">StepDetailsActivity</string>
+    <string name="no_video_available">No video available</string>
+    <string name="thumnail_not_available">Thumbnail is not available</string>
 </resources>

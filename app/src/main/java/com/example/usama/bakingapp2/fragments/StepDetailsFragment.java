@@ -13,11 +13,17 @@ import android.widget.TextView;
 import com.example.usama.bakingapp2.BakingApp;
 import com.example.usama.bakingapp2.R;
 import com.example.usama.bakingapp2.model.Step;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.squareup.picasso.Picasso;
 
 public class StepDetailsFragment extends Fragment {
 
-    BakingApp bakingApp;
+
 
     @Nullable
     @Override
@@ -57,4 +63,6 @@ public class StepDetailsFragment extends Fragment {
 
         return view;
     }
+
+
 }

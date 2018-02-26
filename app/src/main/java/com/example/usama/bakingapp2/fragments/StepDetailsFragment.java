@@ -1,10 +1,13 @@
 package com.example.usama.bakingapp2.fragments;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,15 +18,41 @@ import com.example.usama.bakingapp2.R;
 import com.example.usama.bakingapp2.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.decoder.DecoderCounters;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
+import com.google.android.exoplayer2.video.VideoRendererEventListener;
 import com.squareup.picasso.Picasso;
 
-public class StepDetailsFragment extends Fragment {
+public class StepDetailsFragment extends Fragment implements VideoRendererEventListener {
 
-
+    private static final String TAG = "MainActivity";
+    private SimpleExoPlayerView simpleExoPlayerView;
+    private SimpleExoPlayer player;
+    private TextView resolutionTextView;
 
     @Nullable
     @Override
@@ -61,8 +90,134 @@ public class StepDetailsFragment extends Fragment {
         descriptionTextView.setText(currentStep.getDescription());
 
 
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
+
+        LoadControl loadControl = new DefaultLoadControl();
+
+
+        player = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+        simpleExoPlayerView = new SimpleExoPlayerView(getActivity());
+        simpleExoPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
+
+
+        simpleExoPlayerView.setUseController(true);
+        simpleExoPlayerView.requestFocus();
+
+
+        simpleExoPlayerView.setPlayer(player);
+
+        Uri mp4VideoUri =Uri.parse(currentStep.getVideoURL());
+
+
+        DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
+
+        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getActivity(), "exoplayer2example"), bandwidthMeterA);
+
+        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+
+        MediaSource videoSource = new ExtractorMediaSource(mp4VideoUri, dataSourceFactory, extractorsFactory, null, null);
+
+       // MediaSource videoSource = new HlsMediaSource(mp4VideoUri, dataSourceFactory, 1, null, null);
+        final LoopingMediaSource loopingSource = new LoopingMediaSource(videoSource);
+
+// Prepare the player with the source.
+        player.prepare(loopingSource);
+
+        player.addListener(new ExoPlayer.EventListener() {
+            @Override
+            public void onTimelineChanged(Timeline timeline, Object manifest) {
+                Log.v(TAG, "Listener-onTimelineChanged...");
+            }
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                Log.v(TAG, "Listener-onTracksChanged...");
+            }
+
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+                Log.v(TAG, "Listener-onLoadingChanged...isLoading:" + isLoading);
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                Log.v(TAG, "Listener-onPlayerStateChanged..." + playbackState);
+            }
+
+            @Override
+            public void onRepeatModeChanged(int repeatMode) {
+
+            }
+
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+                Log.v(TAG, "Listener-onPlayerError...");
+                player.stop();
+                player.prepare(loopingSource);
+                player.setPlayWhenReady(true);
+            }
+
+            @Override
+            public void onPositionDiscontinuity() {
+                Log.v(TAG, "Listener-onPositionDiscontinuity...");
+            }
+
+            @Override
+            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+                Log.v(TAG, "Listener-onPlaybackParametersChanged...");
+            }
+        });
+
+        player.setPlayWhenReady(true);
+        player.setVideoDebugListener(this);
+
+
         return view;
     }
 
 
+    @Override
+    public void onVideoEnabled(DecoderCounters counters) {
+
+    }
+
+    @Override
+    public void onVideoDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+
+    }
+
+    @Override
+    public void onVideoInputFormatChanged(Format format) {
+
+    }
+
+    @Override
+    public void onDroppedFrames(int count, long elapsedMs) {
+
+    }
+
+    @Override
+    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+
+    }
+
+    @Override
+    public void onRenderedFirstFrame(Surface surface) {
+
+    }
+
+    @Override
+    public void onVideoDisabled(DecoderCounters counters) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        player.release();
+    }
 }

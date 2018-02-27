@@ -52,6 +52,7 @@ import static android.content.ContentValues.TAG;
 public class StepDetailsFragment extends Fragment implements VideoRendererEventListener {
 
     SimpleExoPlayerView playerView;
+    boolean videoAvailable = false;
     int currentWindow;
     static long playbackPosition;
     boolean playWhenReady = true;
@@ -192,7 +193,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     public void onResume() {
         super.onResume();
 //        hideSystemUi();
-        if(player!=null) {
+        if (player != null) {
             player.seekTo(playbackPosition);
         }
     }
@@ -281,6 +282,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             }
             playerView.setVisibility(View.VISIBLE);
             initializePlayer();
+            videoAvailable = true;
         }
 
 
@@ -289,7 +291,9 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong("playerPosition", player.getContentPosition());
+        if(videoAvailable) {
+            outState.putLong("playerPosition", player.getContentPosition());
+        }
 
     }
 

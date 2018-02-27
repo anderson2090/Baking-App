@@ -78,7 +78,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
         if (currentStep.getVideoURL().equals("")) {
             videoAvailableTextView.setText(R.string.no_video_available);
         } else {
-            videoAvailableTextView.setText("Video is available");
+            videoAvailableTextView.setVisibility(View.GONE);
         }
         //currentStep.setThumbnailURL("http://i.imgur.com/DvpvklR.png");
         if (currentStep.getThumbnailURL().equals("")) {
@@ -95,6 +95,12 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             thumbNailAvailableTextView.setVisibility(View.GONE);
         }
         descriptionTextView.setText(currentStep.getDescription());
+
+        if(!currentStep.getVideoURL().equals("")){
+
+            playerView.setVisibility(View.VISIBLE);
+            initializePlayer();
+        }
 
 
         return view;
@@ -177,18 +183,18 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     @Override
     public void onStart() {
         super.onStart();
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
+//        if (Util.SDK_INT > 23) {
+//            initializePlayer();
+//        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        hideSystemUi();
-        if ((Util.SDK_INT <= 23 || player == null)) {
-            initializePlayer();
-        }
+//        hideSystemUi();
+//        if ((Util.SDK_INT <= 23 || player == null)) {
+//            initializePlayer();
+//        }
     }
     @Override
     public void onPause() {

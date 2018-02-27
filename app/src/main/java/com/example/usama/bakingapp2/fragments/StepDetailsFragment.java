@@ -54,7 +54,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     SimpleExoPlayerView playerView;
     boolean videoAvailable = false;
     int currentWindow;
-    static long playbackPosition;
+    long playbackPosition;
     boolean playWhenReady = true;
     SimpleExoPlayer player;
     Step currentStep;
@@ -291,7 +291,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(videoAvailable) {
+        if (videoAvailable) {
             outState.putLong("playerPosition", player.getContentPosition());
         }
 

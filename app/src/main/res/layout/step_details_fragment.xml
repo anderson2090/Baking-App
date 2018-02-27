@@ -1,53 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/video_available_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        tools:text="Video Available Text" />
-
-    <TextView
-        android:id="@+id/step_thumbnail_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/video_available_text_view"
-        android:layout_centerHorizontal="true"
-        android:textSize="15sp"
-        tools:text="Thumbnail Available Text" />
-
-    <ImageView
-        android:id="@+id/step_thumbnail_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/step_thumbnail_text_view"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/place_holder"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/step_description_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/step_thumbnail_image_view"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="5dp"
-        android:textSize="20sp"
-        tools:text="Description Text" />
-
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:visibility="gone"
-        android:id="@+id/player_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
 
-        android:focusable="true" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/video_available_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Video Available Text" />
+
+        <TextView
+            android:id="@+id/step_thumbnail_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/video_available_text_view"
+            android:layout_centerHorizontal="true"
+            android:textSize="15sp"
+            tools:text="Thumbnail Available Text" />
+
+        <ImageView
+            android:id="@+id/step_thumbnail_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/step_thumbnail_text_view"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/place_holder"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/step_description_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/step_thumbnail_image_view"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:textSize="20sp"
+            tools:text="Description Text" />
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@id/step_description_text_view"
+            android:layout_marginTop="10dp"
+            android:focusable="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+</ScrollView>

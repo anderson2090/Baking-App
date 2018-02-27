@@ -12,6 +12,7 @@ import com.example.usama.bakingapp2.fragments.StepDetailsFragment;
 public class StepDetailsActivity extends AppCompatActivity {
 
     final String STEP_DETAILS_FRAGMENT_TAG = "STEP DETAILS FRAGMENT";
+    StepDetailsFragment stepDetailsFragment = new StepDetailsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +21,16 @@ public class StepDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        StepDetailsFragment stepDetailsFragment = new StepDetailsFragment();
-        stepDetailsFragment.setArguments(getIntent().getExtras());
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.step_details_activity_root_layout, stepDetailsFragment, STEP_DETAILS_FRAGMENT_TAG)
-                .commit();
+        if (savedInstanceState != null) {
+            stepDetailsFragment = (StepDetailsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "stepDetailsFrag");
+        } else {
 
+
+            stepDetailsFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.step_details_activity_root_layout, stepDetailsFragment, STEP_DETAILS_FRAGMENT_TAG)
+                    .commit();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -37,4 +42,9 @@ public class StepDetailsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "stepDetailsFrag", stepDetailsFragment);
+    }
 }

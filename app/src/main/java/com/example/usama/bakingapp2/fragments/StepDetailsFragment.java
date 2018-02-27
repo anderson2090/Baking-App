@@ -53,7 +53,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
     SimpleExoPlayerView playerView;
     int currentWindow;
-    long playbackPosition;
+    static long playbackPosition;
     boolean playWhenReady = true;
     SimpleExoPlayer player;
     Step currentStep;
@@ -96,11 +96,11 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
         }
         descriptionTextView.setText(currentStep.getDescription());
 
-        if(!currentStep.getVideoURL().equals("")){
-
-            playerView.setVisibility(View.VISIBLE);
-            initializePlayer();
-        }
+//        if (!currentStep.getVideoURL().equals("")) {
+//
+//            playerView.setVisibility(View.VISIBLE);
+//            initializePlayer();
+//        }
 
 
         return view;
@@ -117,7 +117,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
         playerView.setUseController(true);
         playerView.requestFocus();
         playerView.setPlayer(player);
-        Uri mp4VideoUri =Uri.parse(currentStep.getVideoURL());
+        Uri mp4VideoUri = Uri.parse(currentStep.getVideoURL());
 
         DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
 
@@ -125,7 +125,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
-       // MediaSource videoSource = new HlsMediaSource(mp4VideoUri, dataSourceFactory, 1, null, null);
+        // MediaSource videoSource = new HlsMediaSource(mp4VideoUri, dataSourceFactory, 1, null, null);
         MediaSource videoSource = new ExtractorMediaSource(mp4VideoUri, dataSourceFactory, extractorsFactory, null, null);
         final LoopingMediaSource loopingSource = new LoopingMediaSource(videoSource);
         player.prepare(loopingSource);
@@ -143,7 +143,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
             @Override
             public void onLoadingChanged(boolean isLoading) {
-                Log.v(TAG, "Listener-onLoadingChanged...isLoading:"+isLoading);
+                Log.v(TAG, "Listener-onLoadingChanged...isLoading:" + isLoading);
             }
 
             @Override
@@ -192,16 +192,15 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     public void onResume() {
         super.onResume();
 //        hideSystemUi();
-//        if ((Util.SDK_INT <= 23 || player == null)) {
-//            initializePlayer();
-//        }
+        player.seekTo(playbackPosition);
     }
+
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
+//        if (Util.SDK_INT <= 23) {
+//            releasePlayer();
+//        }
     }
 
     @Override
@@ -211,6 +210,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             releasePlayer();
         }
     }
+
     private void releasePlayer() {
         if (player != null) {
             playbackPosition = player.getCurrentPosition();
@@ -220,6 +220,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             player = null;
         }
     }
+
     private void hideSystemUi() {
         playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -261,6 +262,32 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
     @Override
     public void onVideoDisabled(DecoderCounters counters) {
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (!currentStep.getVideoURL().equals("")) {
+            if (savedInstanceState != null) {
+//                if (player != null) {
+//                    player.seekTo(savedInstanceState.getLong("playerPosition"));
+//
+//                }
+                playbackPosition = savedInstanceState.getLong("playerPosition");
+            }
+            playerView.setVisibility(View.VISIBLE);
+            initializePlayer();
+        }
+
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("playerPosition", player.getContentPosition());
 
     }
 

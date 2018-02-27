@@ -192,7 +192,9 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     public void onResume() {
         super.onResume();
 //        hideSystemUi();
-        player.seekTo(playbackPosition);
+        if(player!=null) {
+            player.seekTo(playbackPosition);
+        }
     }
 
     @Override

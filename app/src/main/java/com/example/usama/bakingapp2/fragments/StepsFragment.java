@@ -137,7 +137,7 @@ public class StepsFragment extends Fragment {
                             stepDetailsFragment.setArguments(bundle);
                             getChildFragmentManager()
                                     .beginTransaction()
-                                    .add(R.id.large_screen_step_details_layout,stepDetailsFragment)
+                                    .replace(R.id.large_screen_step_details_layout,stepDetailsFragment,"StepDetailsChildFrag")
                                     .commit();
                         }
                     }

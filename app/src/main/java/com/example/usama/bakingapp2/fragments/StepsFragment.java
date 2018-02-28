@@ -14,13 +14,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.usama.bakingapp2.BakingApp;
 import com.example.usama.bakingapp2.R;
 import com.example.usama.bakingapp2.StepDetailsActivity;
 import com.example.usama.bakingapp2.model.Step;
+import com.example.usama.bakingapp2.utils.ScreenSizeHelper;
 
 import java.util.ArrayList;
+
+import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.LARGE;
+import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.NORMAL;
+import static com.example.usama.bakingapp2.utils.ScreenSizeHelper.screenSize;
 
 public class StepsFragment extends Fragment {
 
@@ -119,10 +125,21 @@ public class StepsFragment extends Fragment {
                 stepCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (screenSize(getActivity()) == NORMAL) {
+                            Intent intent = new Intent(new Intent(getActivity(), StepDetailsActivity.class));
+                            intent.putExtra("currentStep", steps.get(getAdapterPosition()));
+                            startActivity(intent);
+                        } else {
 
-                        Intent intent = new Intent(new Intent(getActivity(), StepDetailsActivity.class));
-                        intent.putExtra("currentStep",steps.get(getAdapterPosition()));
-                        startActivity(intent);
+                            StepDetailsFragment stepDetailsFragment = new StepDetailsFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("currentStep",steps.get(getAdapterPosition()));
+                            stepDetailsFragment.setArguments(bundle);
+                            getChildFragmentManager()
+                                    .beginTransaction()
+                                    .add(R.id.large_screen_step_details_layout,stepDetailsFragment)
+                                    .commit();
+                        }
                     }
                 });
             }

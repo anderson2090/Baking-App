@@ -166,18 +166,7 @@ public class MainActivity extends RootActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        int id = item.getItemId();
-
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private static class RecipeLoadingTask extends AsyncTaskLoader<List<Recipe>> {
         List<Recipe> recipes;

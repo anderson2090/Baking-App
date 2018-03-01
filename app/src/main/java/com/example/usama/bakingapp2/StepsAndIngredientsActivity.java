@@ -19,15 +19,14 @@ import java.util.LinkedHashMap;
 
 public class StepsAndIngredientsActivity extends RootActivity {
 
-    //    final String STEPS_FRAGMENT = "STEPS FRAGMENT";
-//    final String INGREDIENTS_FRAGMENT = "INGREDIENTS FRAGMENT";
+
     final String CURRENT_FRAGMENT = "CURRENT FRAGMENT";
     final String STEPS_FRAGMENT_TAG = "STEPS FRAGMENT";
     final String INGREDIENTS_FRAGMENT_TAG = "INGREDIENTS FRAGMENT";
     static int fragmentIndex = 0;
     StepsFragment stepsFragment = new StepsFragment();
     IngredientsFragment ingredientsFragment = new IngredientsFragment();
-    //   Fragment[] fragments = {new StepsFragment(), new IngredientsFragment()};
+
     LinkedHashMap<String, Fragment> fragmentLinkedHashMap = new LinkedHashMap<>();
     FragmentManager fragmentManager;
     AHBottomNavigation bottomNavigation;
@@ -44,7 +43,7 @@ public class StepsAndIngredientsActivity extends RootActivity {
         fragmentLinkedHashMap.put(INGREDIENTS_FRAGMENT_TAG, ingredientsFragment);
         setSupportActionBar(toolbar);
         fragmentManager = getSupportFragmentManager();
-        //     addFragment(fragments[fragmentIndex], STEPS_FRAGMENT);
+
 
         if (savedInstanceState != null) {
             fragmentIndex = savedInstanceState.getInt(CURRENT_FRAGMENT);
@@ -70,7 +69,7 @@ public class StepsAndIngredientsActivity extends RootActivity {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
 
-                //  addFragment(fragments[position], STEPS_FRAGMENT);
+
                 addFragment(new ArrayList<>(fragmentLinkedHashMap.values()).get(position),
                         new ArrayList<>(fragmentLinkedHashMap.keySet()).get(position));
 

@@ -97,11 +97,6 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
         }
         descriptionTextView.setText(currentStep.getDescription());
 
-//        if (!currentStep.getVideoURL().equals("")) {
-//
-//            playerView.setVisibility(View.VISIBLE);
-//            initializePlayer();
-//        }
 
 
         return view;
@@ -126,7 +121,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
-        // MediaSource videoSource = new HlsMediaSource(mp4VideoUri, dataSourceFactory, 1, null, null);
+
         MediaSource videoSource = new ExtractorMediaSource(mp4VideoUri, dataSourceFactory, extractorsFactory, null, null);
         final LoopingMediaSource loopingSource = new LoopingMediaSource(videoSource);
         player.prepare(loopingSource);
@@ -181,30 +176,18 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-//        if (Util.SDK_INT > 23) {
-//            initializePlayer();
-//        }
-    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-//        hideSystemUi();
+
         if (player != null) {
             player.seekTo(playbackPosition);
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-//        if (Util.SDK_INT <= 23) {
-//            releasePlayer();
-//        }
-    }
+
 
     @Override
     public void onStop() {
@@ -224,14 +207,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
         }
     }
 
-    private void hideSystemUi() {
-        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
+
 
     @Override
     public void onVideoEnabled(DecoderCounters counters) {
@@ -274,10 +250,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
         if (!currentStep.getVideoURL().equals("")) {
             if (savedInstanceState != null) {
-//                if (player != null) {
-//                    player.seekTo(savedInstanceState.getLong("playerPosition"));
-//
-//                }
+
                 playbackPosition = savedInstanceState.getLong("playerPosition");
             }
             playerView.setVisibility(View.VISIBLE);

@@ -11,4 +11,6 @@
     <string name="thumnail_not_available">Thumbnail is not available</string>
     <string name="video_init_time">00:00:00</string>
     <string name="example">EXAMPLE</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

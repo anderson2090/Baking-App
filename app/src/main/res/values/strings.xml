@@ -10,4 +10,5 @@
     <string name="no_video_available">No video available</string>
     <string name="thumnail_not_available">Thumbnail is not available</string>
     <string name="video_init_time">00:00:00</string>
+    <string name="example">EXAMPLE</string>
 </resources>

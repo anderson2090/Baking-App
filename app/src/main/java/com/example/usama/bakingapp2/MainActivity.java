@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.usama.bakingapp2.database.DBHandler;
 import com.example.usama.bakingapp2.model.Recipe;
 import com.example.usama.bakingapp2.utils.APIClient;
 import com.example.usama.bakingapp2.utils.APIEndPoints;
@@ -87,6 +88,23 @@ public class MainActivity extends RootActivity {
                 } else {
 
                     app.setRecipes(recipes);
+
+                    DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null, 1);
+                    if (!dbHandler.tableIsEmpty()) {
+                        for (int i = 0; i < recipes.size(); i++) {
+                            String recipeName = recipes.get(i).getName();
+                            StringBuilder ingredients = new StringBuilder();
+                            for (int j = 0; j < recipes.get(i).getIngredients().size(); j++) {
+                                ingredients.append(j + 1);
+                                ingredients.append(". ");
+                                ingredients.append(recipes.get(i).getIngredients().get(j).getIngredient());
+                                ingredients.append(" \n");
+                            }
+                            dbHandler.addRecipe(recipeName, ingredients);
+                        }
+                    }
+
+
                     recyclerView = (RecyclerView) findViewById(R.id.main_activity_recycler_view);
                     if (screenSize(getApplicationContext()) == LARGE) {
                         layoutManager = new GridLayoutManager(getApplicationContext(), 3);

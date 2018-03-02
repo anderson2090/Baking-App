@@ -170,8 +170,9 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             }
         });
 
-        player.setPlayWhenReady(true);
+        player.setPlayWhenReady(playWhenReady);
         player.setVideoDebugListener(this);
+        player.seekTo(playbackPosition);
 
     }
 
@@ -182,17 +183,16 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
 
         if (Util.SDK_INT <= 23 || player == null) {
             initializePlayer();
-            player.seekTo(playbackPosition);
+
         }
     }
+
 
 
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
+        releasePlayer();
     }
 
     private void releasePlayer() {
@@ -249,6 +249,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             if (savedInstanceState != null) {
 
                 playbackPosition = savedInstanceState.getLong("playerPosition");
+                playWhenReady = savedInstanceState.getBoolean("playWhenReady");
             }
             playerView.setVisibility(View.VISIBLE);
             initializePlayer();
@@ -262,7 +263,8 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (videoAvailable && player != null) {
-            outState.putLong("playerPosition", player.getContentPosition());
+            outState.putLong("playerPosition", player.getCurrentPosition());
+            outState.putBoolean("playWhenReady", player.getPlayWhenReady());
         }
 
     }

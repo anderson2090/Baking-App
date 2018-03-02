@@ -201,6 +201,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             currentWindow = player.getCurrentWindowIndex();
             playWhenReady = player.getPlayWhenReady();
             player.release();
+
             player = null;
         }
     }

@@ -98,7 +98,6 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
         descriptionTextView.setText(currentStep.getDescription());
 
 
-
         return view;
     }
 
@@ -177,16 +176,15 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
 
-        if (player != null) {
+        if (Util.SDK_INT <= 23 || player == null) {
+            initializePlayer();
             player.seekTo(playbackPosition);
         }
     }
-
 
 
     @Override
@@ -206,7 +204,6 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
             player = null;
         }
     }
-
 
 
     @Override
@@ -264,7 +261,7 @@ public class StepDetailsFragment extends Fragment implements VideoRendererEventL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (videoAvailable) {
+        if (videoAvailable && player != null) {
             outState.putLong("playerPosition", player.getContentPosition());
         }
 
